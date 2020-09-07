@@ -67,16 +67,10 @@ public without sharing class MH_Doctor_Service {
     }
 
     
-    public static Set<Doctor__c> fiveRandomDoctors() {
-        List<Doctor__c> doctors = [SELECT Name, LastName__c, Email__c, Work_Phone__c FROM Doctor__c];
+    public static List<Doctor__c> fiveRandomDoctors() {
 
-        Set<Doctor__c> fiveRandomDoctors = new Set<Doctor__c>();
-
-        while (fiveRandomDoctors.size() < 5) {
-            Integer randomNumber = Integer.valueOf((Math.random() * (doctors.size() - 1)));
-            fiveRandomDoctors.add(doctors.get(randomNumber));
-        }
-        return fiveRandomDoctors;
+        Integer randomNumber =Integer.valueOf( Math.random() * 10);
+        return  [SELECT Name, LastName__c, Email__c, Work_Phone__c FROM Doctor__c LIMIT 5 OFFSET  :randomNumber];
     }
 
     public class MH_Doctor_WrapperJSON {

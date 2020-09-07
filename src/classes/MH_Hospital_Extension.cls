@@ -68,8 +68,9 @@ public with sharing class MH_Hospital_Extension {
     }
 
     public void dismiss() {
-        contracts = MH_Hospital_Service.dismiss(contractId, hospital);
-
+        System.debug('DISMIS SIE KLIKA');
+        MH_Hospital_Service.dismiss(contractId, hospital);
+        contracts = [SELECT Date_Started__c, Expire_Date__c, Doctor_Full_Name__c, Name, Status__c FROM Contract__c WHERE Hospital__c = :hospital.Id];
     }
 
     public void findSearchedDoctors() {

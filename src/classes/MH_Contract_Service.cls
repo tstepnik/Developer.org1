@@ -29,8 +29,6 @@ public without sharing class MH_Contract_Service {
     private static String newLine = '<br>' + '&nbsp;';
 
     public static void catchOverlappedContracts(Contract__c newContract, Set<Contract__c> contracts) {
-//        System.debug('NEW CONTRACT');
-//        System.debug(newContract);
 
         String errorMessage = ' ' + System.Label.MH_Contract_Error_Message2;
         Boolean isOverlapping = false;
@@ -39,6 +37,9 @@ public without sharing class MH_Contract_Service {
             isOverlapping = true;
         } else if (newContract.Date_Started__c == newContract.Expire_Date__c) {
             errorMessage = ' ' + System.Label.MH_Contract_Error_Msg_Equal_Dates;
+            isOverlapping = true;
+        } else if (newContract.Date_Started__c > newContract.Expire_Date__c) {
+            errorMessage = ' ' + System.Label.MH_Contract_Error_Msg_End_Date_Before_Start_Date;
             isOverlapping = true;
         } else {
 
@@ -125,10 +126,13 @@ public without sharing class MH_Contract_Service {
                     err = results[i].getErrors()[0].getMessage();
                     err = err.replace('<br>' + '&nbsp;', '\n');
                 }
-
-                doctorWrappers[i].Status = results[i].isSuccess() ? System.Label.MH_Success_Message : ' ' + System.Label.MH_Error_Message + '' + err;
+                System.debug(err);
+                if (err == 'cannot specify Id in an insert call') {
+                    doctorWrappers[i].Status = System.Label.MH_Success_Message;
+                } else {
+                    doctorWrappers[i].Status = results[i].isSuccess() ? System.Label.MH_Success_Message : ' ' + System.Label.MH_Error_Message + ' ' + err;
+                }
             }
-
         } catch (DmlException dmlException) {
 
         }

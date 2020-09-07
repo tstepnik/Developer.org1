@@ -1,15 +1,19 @@
 public with sharing class MH_Hospital_Service {
 
-    public static List<Contract__c> dismiss(String contractId, Hospital__c hospital) {
+    public static void dismiss(String contractId, Hospital__c hospital) {
         Date today = Date.today();
-        Contract__c contract = [SELECT Id, Date_Started__c, Expire_Date__c, Status__c FROM Contract__c WHERE Id = :contractId];
-        if (contract.Date_Started__c >= today) {
-            delete contract;
-        } else if (contract.Date_Started__c <= today && (contract.Expire_Date__c > today || contract.Expire_Date__c == null)) {
-            contract.Expire_Date__c = today;
-            update contract;
+        try {
+            Contract__c contract = [SELECT Id, Date_Started__c, Expire_Date__c, Status__c FROM Contract__c WHERE Id = :contractId];
+            if (contract.Date_Started__c >= today) {
+                delete contract;
+            } else if (contract.Date_Started__c <= today && (contract.Expire_Date__c > today || contract.Expire_Date__c == null)) {
+                contract.Expire_Date__c = today;
+                update contract;
+            }
+        }catch (DmlException ex){
+            System.debug('DML EXCEPTION');
+            System.debug(ex.getMessage());
         }
-        return [SELECT Date_Started__c, Expire_Date__c, Doctor_Full_Name__c, Name, Status__c FROM Contract__c WHERE Hospital__c = :hospital.Id];
     }
 
     public static List<Hospital__c> findHospitals(Hospital__c searchedHospital) {

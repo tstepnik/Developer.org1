@@ -75,7 +75,7 @@
                 </apex:outputPanel>
             </apex:pageBlockSection>
 
-            <apex:pageBlockSection title="{!$Label.Hospital_Contract_List}" columns="1">
+            <apex:pageBlockSection title="{!$Label.Hospital_Contract_List}" columns="1" id="mainView-contractTableSection">
                 <apex:pageBlockTable value="{!contracts}" var="contract" id="mainView-contractsTable">
                     <apex:column>
                         <apex:facet name="header">{!$Label.MH_Actions}</apex:facet>
@@ -83,7 +83,7 @@
                                           onClick="window.open('/{!contract.Id}')"/>
 
                         <apex:commandLink value="{!$Label.Dismiss_Contract}" action="{!dismiss}"
-                                          reRender="mainView-contractsTable"
+                                          reRender="mainView-contractTableSection"
                                           rendered="{!if(AND(contract.Expire_Date__c != null,contract.Expire_Date__c <= TODAY()),false,true)}">
                             <apex:param value="{!contract.Id}" name="Name" assignTo="{!contractId}"/>
                         </apex:commandLink>

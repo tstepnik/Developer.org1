@@ -44,7 +44,7 @@ public without sharing class MH_Doctor_Extension {
         this.doctor = (Doctor__c) stdController.getRecord();
         this.contracts = [SELECT Date_Started__c, Expire_Date__c, Hospital__c, Name FROM Contract__c WHERE Doctor__c = :doctor.Id];
         this.doctorWorkNumber = doctor.Work_Phone__c;
-        this.randomDoctors = new List<Doctor__c>(MH_Doctor_Service.fiveRandomDoctors());
+        this.randomDoctors = MH_Doctor_Service.fiveRandomDoctors();
     }
 
     public void dismiss() {
@@ -82,5 +82,11 @@ public without sharing class MH_Doctor_Extension {
         MH_Doctor_Service.sendEmail(emailSubject, emailBody, doctor);
         emailSubject = '';
         emailBody = '';
+    }
+
+    @RemoteAction public static Id saveImage(String name, String contentType, String data) {
+        Document d = new Document(Name=name, FolderId=UserInfo.getUserId(), contentType=contentType, Body=EncodingUtil.base64Decode(data));
+        Database.insert(d, true);
+        return d.id;
     }
 }
